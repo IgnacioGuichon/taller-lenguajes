@@ -117,6 +117,9 @@ def juego_ahorcado():
         # Verificar si el jugador ya adivinó la palabra completa
         if "_" not in progress:
             print("¡Ganaste!")
+            # Utilizo variable attempts como medidora del puntaje
+            puntaje = attempts + 6
+            print("Puntaje final:", puntaje)
             break
 
         print(f"Intentos restantes: {attempts}")
@@ -143,6 +146,8 @@ def juego_ahorcado():
 
     else:
         print(f"¡Perdiste! La palabra era: {word}")
+        puntaje = 0
+        print("Puntaje final:", puntaje)
     print()
     pass
 
