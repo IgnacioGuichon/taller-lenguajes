@@ -86,23 +86,36 @@ def ejercicios_introductorios():
 import random
 
 def juego_ahorcado():
-    words = [
-        "python",
-        "programa",
-        "variable",
-        "funcion",
-        "bucle",
-        "cadena",
-        "entero",
-        "lista",
-    ]
+    categorias = {
+        "Programación": ["python", "programa", "variable", "funcion", "bucle", "cadena", "entero", "lista"],
+        "Colores": ["rojo", "azul", "verde", "amarillo"],
+        "Animales": ["perro", "gato", "elefante", "jirafa"],
+        "Frutas": ["manzana", "banana", "naranja", "uva"],
+        "Provincias": ["formosa", "cordoba", "chubut", "mendoza"],
+    }
 
-    word = random.choice(words)
     guessed = []
     attempts = 6
 
     print("¡Bienvenido al Ahorcado!")
     print()
+    print("Categorías disponibles:")
+    print()
+    # Muestra categorías disponibles
+    for categoria in categorias:
+        print(f"- {categoria}")
+
+    # Usuario selecciona la categoría
+    while True:
+        eleccion = input("Elegí una categoría: ")
+        if eleccion in categorias:
+            palabras = categorias[eleccion]
+            word = random.choice(palabras)
+            break
+        else:
+            print("Categoría no válida.")
+    print(f"Has seleccionado la categoría: {eleccion}")
+
 
     while attempts > 0:
         # Mostrar progreso: letras adivinadas y guiones para las que faltan
