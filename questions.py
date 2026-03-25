@@ -94,9 +94,6 @@ def juego_ahorcado():
         "Provincias": ["formosa", "cordoba", "chubut", "mendoza"],
     }
 
-    guessed = []
-    attempts = 6
-
     print("¡Bienvenido al Ahorcado!")
     print()
     print("Categorías disponibles:")
@@ -104,65 +101,75 @@ def juego_ahorcado():
     # Muestra categorías disponibles
     for categoria in categorias:
         print(f"- {categoria}")
+    print()
 
     # Usuario selecciona la categoría
     while True:
         eleccion = input("Elegí una categoría: ")
         if eleccion in categorias:
-            palabras = categorias[eleccion]
-            word = random.choice(palabras)
+            # .sample para no repetir palabra
+            palabras = random.sample(categorias[eleccion], len(categorias[eleccion]))
             break
         else:
             print("Categoría no válida.")
     print(f"Has seleccionado la categoría: {eleccion}")
 
+    # Bucle para jugar por rondas
+    for word in palabras:
+        guessed = []
+        attempts = 6
 
-    while attempts > 0:
-        # Mostrar progreso: letras adivinadas y guiones para las que faltan
-        progress = ""
-        for letter in word:
+        while attempts > 0:
+            # Mostrar progreso: letras adivinadas y guiones para las que faltan
+            progress = ""
+            for letter in word:
+                if letter in guessed:
+                    progress += letter + " "
+                else:
+                    progress += "_ "
+            print(progress)
+            
+            # Verificar si el jugador ya adivinó la palabra completa
+            if "_" not in progress:
+                print("¡Ganaste!")
+                # Utilizo variable attempts como medidora del puntaje
+                puntaje = attempts + 6
+                print("Puntaje final de ronda:", puntaje)
+                break
+
+            print(f"Intentos restantes: {attempts}")
+            print(f"Letras usadas: {', '.join(guessed)}")
+
+            letter = input("Ingresá una letra: ")
+            
+            # Validación de entrada: letra única y alfabética.
+            if len(letter) != 1 or not letter.isalpha():
+                print("Entrada no válida.")
+                continue
+
             if letter in guessed:
-                progress += letter + " "
+                print("Ya usaste esa letra.")
+            elif letter in word:
+                guessed.append(letter)
+                print("¡Bien! Esa letra está en la palabra.")
             else:
-                progress += "_ "
-        print(progress)
-        
-        # Verificar si el jugador ya adivinó la palabra completa
-        if "_" not in progress:
-            print("¡Ganaste!")
-            # Utilizo variable attempts como medidora del puntaje
-            puntaje = attempts + 6
-            print("Puntaje final:", puntaje)
-            break
+                guessed.append(letter)
+                attempts -= 1
+                print("Esa letra no está en la palabra.")
 
-        print(f"Intentos restantes: {attempts}")
-        print(f"Letras usadas: {', '.join(guessed)}")
+            print()
 
-        letter = input("Ingresá una letra: ")
-        
-        # Validación de entrada: letra única y alfabética.
-        if len(letter) != 1 or not letter.isalpha():
-            print("Entrada no válida.")
-            continue
-
-        if letter in guessed:
-            print("Ya usaste esa letra.")
-        elif letter in word:
-            guessed.append(letter)
-            print("¡Bien! Esa letra está en la palabra.")
         else:
-            guessed.append(letter)
-            attempts -= 1
-            print("Esa letra no está en la palabra.")
-
+            print(f"¡Perdiste! La palabra era: {word}")
+            puntaje = 0
+            print("Puntaje final:", puntaje)
+        
+        # Pregunta al usuario si quiere jugar con otra palabra de la misma categoría
+        opcion = input("¿Querés jugar con otra palabra de esta categoría? (s/n): ").lower()
+        if opcion != "s":
+            break
         print()
-
-    else:
-        print(f"¡Perdiste! La palabra era: {word}")
-        puntaje = 0
-        print("Puntaje final:", puntaje)
-    print()
-    pass
+        pass
 
 if __name__ == "__main__":
     juego_ahorcado()
