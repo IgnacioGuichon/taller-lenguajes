@@ -223,13 +223,4 @@ def mostrar_tabla_final(resultados):
 
 
 if __name__ == "__main__":
-    estadisticas = inicializar_estadisticas(rounds)
-
-    for i, ronda in enumerate(rounds, start=1):
-        print(f"\nRonda {i} - {ronda['theme']}")
-        ganador, puntaje_ganador, puntajes = procesar_ronda(ronda, estadisticas)
-        print(f"Ganador: {ganador} ({puntaje_ganador} pts)")
-        mostrar_tabla_progresiva(estadisticas)
-
-    resultados_finales = calcular_resultados_finales(estadisticas)
-    mostrar_tabla_final(resultados_finales)
+    pass
