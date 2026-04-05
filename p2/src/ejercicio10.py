@@ -125,14 +125,54 @@ def procesar_ronda(round, estadisticas):
 
     return ganador, puntaje_ganador, puntajes_ronda
 
+# Muestra tabla de posiciones sin acumular puntajes de rondas pasadas.
+# No se invoca en el flujo principal porque se pide mostrar la PROGRESIÓN. (me dí cuenta tarde)
+def mostrar_tabla_ronda(puntajes_ronda):
+    """
+    Muestra la tabla de posiciones de una ronda,
+    ordenada por puntaje descendente.
+    """
+    print("Tabla de posiciones:")
+
+    # Ordenar por puntaje de mayor a menor
+    ordenados = sorted(
+        puntajes_ronda.items(),
+        key=lambda item: item[1],
+        reverse=True
+    )
+
+    for competidor, puntaje in ordenados:
+        print(f"{competidor}: {puntaje} pts")
+
+# Muestra tabla de posiciones acumulada hasta la ronda actual, ordenada por puntaje total.
+# Se invoca porque muestra PROGRESIÓN como pide la consigna.
+def mostrar_tabla_progresiva(estadisticas):
+    """
+    Muestra la tabla de posiciones con puntajes acumulados
+    hasta la ronda actual, ordenada por puntaje total.
+    """
+    print("Tabla de posiciones (acumulada):")
+
+    # Construir diccionario {participante: total}
+    acumulados = {
+        competidor: datos["total"]
+        for competidor, datos in estadisticas.items()
+    }
+
+    # Ordenar por puntaje total descendente
+    ordenados = sorted(
+        acumulados.items(),
+        key=lambda item: item[1],
+        reverse=True
+    )
+
+    for competidor, total in ordenados:
+        print(f"{competidor}: {total} pts")
+
 if __name__ == "__main__":
     estadisticas = inicializar_estadisticas(rounds)
     ronda = rounds[0]
     ganador, puntaje_ganador, puntajes = procesar_ronda(ronda, estadisticas)
     print(f"Ronda: {ronda['theme']}")
     print(f"Ganador: {ganador} ({puntaje_ganador} pts)")
-    print("Puntajes de la ronda:", puntajes)
-    print()
-    print("Estadísticas acumuladas:")
-    for participante, datos in estadisticas.items():
-        print(participante, datos)
+    mostrar_tabla_progresiva(estadisticas)
