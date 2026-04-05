@@ -72,8 +72,26 @@ def calcular_puntajes_ronda(scores):
     
     return puntajes
 
+def inicializar_estadisticas(rounds):
+    """
+    Inicializa las estadísticas acumuladas para cada participante.
+    Devuelve un diccionario con la estructura base.
+    """
+    estadisticas = {}
+
+    for round in rounds:
+        for participante in round["scores"]:
+            if participante not in estadisticas:
+                estadisticas[participante] = {
+                    "total": 0,
+                    "rondas_ganadas": 0,
+                    "mejor_ronda": 0,
+                    "puntaje_por_ronda": []
+                }
+
+    return estadisticas
+
 if __name__ == "__main__":
-    primera_ronda = rounds[0]
-    puntajes = calcular_puntajes_ronda(primera_ronda["scores"])
-    print(primera_ronda["theme"])
-    print(puntajes)
+    estadisticas = inicializar_estadisticas(rounds)
+    for competidor, datos in estadisticas.items():
+        print(f"{competidor}: {datos}")
