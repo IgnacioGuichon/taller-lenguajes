@@ -91,7 +91,48 @@ def inicializar_estadisticas(rounds):
 
     return estadisticas
 
+def procesar_ronda(round, estadisticas):
+    """
+    Procesa una ronda completa:
+    - calcula puntajes
+    - actualiza estadísticas acumuladas
+    - determina el ganador de la ronda
+
+    Devuelve:
+    - ganador (str)
+    - puntaje del ganador (int)
+    - puntajes de la ronda (dict)
+    """
+    scores = round["scores"]
+
+    # 1. Calcular puntajes de la ronda
+    puntajes_ronda = calcular_puntajes_ronda(scores)
+
+    # 2. Actualizar estadísticas acumuladas
+    for competidor, puntaje in puntajes_ronda.items():
+        estadisticas[competidor]["total"] += puntaje
+        estadisticas[competidor]["puntaje_por_ronda"].append(puntaje)
+
+        if puntaje > estadisticas[competidor]["mejor_ronda"]:
+            estadisticas[competidor]["mejor_ronda"] = puntaje
+
+    # 3. Determinar ganador de la ronda
+    ganador = max(puntajes_ronda, key=puntajes_ronda.get)
+    puntaje_ganador = puntajes_ronda[ganador]
+
+    # 4. Sumar ronda ganada
+    estadisticas[ganador]["rondas_ganadas"] += 1
+
+    return ganador, puntaje_ganador, puntajes_ronda
+
 if __name__ == "__main__":
     estadisticas = inicializar_estadisticas(rounds)
-    for competidor, datos in estadisticas.items():
-        print(f"{competidor}: {datos}")
+    ronda = rounds[0]
+    ganador, puntaje_ganador, puntajes = procesar_ronda(ronda, estadisticas)
+    print(f"Ronda: {ronda['theme']}")
+    print(f"Ganador: {ganador} ({puntaje_ganador} pts)")
+    print("Puntajes de la ronda:", puntajes)
+    print()
+    print("Estadísticas acumuladas:")
+    for participante, datos in estadisticas.items():
+        print(participante, datos)
