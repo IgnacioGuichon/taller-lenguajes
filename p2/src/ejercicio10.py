@@ -169,10 +169,67 @@ def mostrar_tabla_progresiva(estadisticas):
     for competidor, total in ordenados:
         print(f"{competidor}: {total} pts")
 
+def calcular_resultados_finales(estadisticas):
+    """
+    A partir de las estadísticas acumuladas, calcula los resultados finales.
+    Devuelve una lista de diccionarios con los datos por participante.
+    """
+    resultados = []
+
+    for competidor, datos in estadisticas.items():
+        rondas_jugadas = len(datos["puntaje_por_ronda"])
+        promedio = (
+            sum(datos["puntaje_por_ronda"]) / rondas_jugadas
+            if rondas_jugadas > 0
+            else 0
+        )
+
+        resultados.append({
+            "nombre": competidor,
+            "total": datos["total"],
+            "rondas_ganadas": datos["rondas_ganadas"],
+            "mejor_ronda": datos["mejor_ronda"],
+            "promedio": promedio
+        })
+
+    # Ordenar por puntaje total descendente
+    resultados.sort(key=lambda r: r["total"], reverse=True)
+
+    return resultados
+
+
+def mostrar_tabla_final(resultados):
+    """
+    Muestra la tabla final de posiciones.
+    """
+    print("\nTabla de posiciones final:")
+    print(
+        "Cocinero".ljust(15),
+        "Puntaje".ljust(10),
+        "Rondas ganadas".ljust(15),
+        "Mejor ronda".ljust(12),
+        "Promedio"
+    )
+    print("-" * 65)
+
+    for r in resultados:
+        print(
+            r["nombre"].ljust(15),
+            str(r["total"]).ljust(10),
+            str(r["rondas_ganadas"]).ljust(15),
+            str(r["mejor_ronda"]).ljust(12),
+            f"{r['promedio']:.1f}"
+        )
+
+
 if __name__ == "__main__":
     estadisticas = inicializar_estadisticas(rounds)
-    ronda = rounds[0]
-    ganador, puntaje_ganador, puntajes = procesar_ronda(ronda, estadisticas)
-    print(f"Ronda: {ronda['theme']}")
-    print(f"Ganador: {ganador} ({puntaje_ganador} pts)")
-    mostrar_tabla_progresiva(estadisticas)
+
+    for i, ronda in enumerate(rounds, start=1):
+        print(f"\nRonda {i} - {ronda['theme']}")
+        ganador, puntaje_ganador, puntajes = procesar_ronda(ronda, estadisticas)
+        print(f"Ganador: {ganador} ({puntaje_ganador} pts)")
+        mostrar_tabla_progresiva(estadisticas)
+
+    resultados_finales = calcular_resultados_finales(estadisticas)
+    mostrar_tabla_final(resultados_finales)
